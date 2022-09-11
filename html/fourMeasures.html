@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>メロディア 4小節ver.</title>
+
+    <script>
+          document.write(
+            '<link rel="stylesheet" href="../css/style.css?' + new Date().getTime() + '">'
+          );
+    </script>
+    <script src="https://unpkg.com/tone@14.7.77/build/Tone.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="../js/abcjs-basic.js"></script>
+    <script src="../js/abcjs_midi_5.12.0-min.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="../css/abcjs-audio.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css" integrity="sha512-1sCRPdkRXhBV2PBLUdRb4tMg1w2YPf37qatUFeS7zlBy7jJI8Lf4VHwWfZZfpXtYSLy85pkm9GaYVYMfw5BC1A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+
+<body onload="load()">
+
+<div class="playSettings">
+  <div class="buttons">
+    <select name="tempo_category" id="tempo_category">
+      <option value="tempo_60">&#9833; = 60</option>
+      <option value="tempo_80">&#9833; = 80</option>
+      <option value="tempo_100" selected>&#9833; = 100</option>
+      <option value="tempo_120">&#9833; = 120</option>
+      <option value="tempo_140">&#9833; = 140</option>
+      <option value="tempo_160">&#9833; = 160</option>
+    </select>
+    <select name="play_mode" id="play_mode">
+      <option value="play" selected>旋律・コード</option>
+      <option value="only_melody">旋律のみ</option>
+      <option value="only_chord">コードのみ</option>
+    </select>
+    <div id="audio" style="width:400px;"></div>  
+  </div>
+</div>
+
+<div id="paper"></div>
+
+<div class="beat">
+  <label for="eighthNote">
+    <input id="eighthNote" type="radio" name="beat" value="eighthNote">
+    <img src="img/hatibuonpu.jpeg" alt="" class="rhythmImg" id="tata" ontouchstart="">
+  </label>
+
+  <label for="quarterNote">
+    <input id="quarterNote" type="radio" name="beat" value="quarterNote" checked>
+    <img src="img/shibuonnpu.jpeg" alt="" class="rhythmImg" id="tan" ontouchstart="">
+  </label>
+
+  <label for="dottedQuarterNote">
+    <input id="dottedQuarterNote" type="radio" name="beat" value="dottedQuarterNote">
+    <img src="img/huten-yonbuonpu.jpeg" alt="" class="rhythmImg" id="ta_n" ontouchstart="">
+  </label>
+
+  <label for="halfNote">
+    <input id="halfNote" type="radio" name="beat" value="halfNote">
+    <img src="img/nibunonpu.jpeg" alt="" class="rhythmImg" id="ta__n" ontouchstart="">
+  </label>
+
+  <img src="img/hachibukyufu.jpeg" alt="" class="rhythmImg" id="eighthRest" ontouchstart="">
+
+  <img src="img/shibukyufu.jpeg" alt="" class="rhythmImg" id="quarterRest" ontouchstart="">
+
+  <button id="oneBack" ontouchstart=""><i class="fa-solid fa-rotate-left"></i></button>
+
+  <select name="measureEdit" id="measureEdit">
+    <option value="measureEdit">編集モード</option>
+    <option value="measure1">1小節目を編集</option>
+    <option value="measure2">2小節目を編集</option>
+    <option value="measure3">3小節目を編集</option>
+    <option value="measure4">4小節目を編集</option>
+  </select>
+</div>
+
+<div class="piano" id="piano">
+  <div class="key white" id="do" ontouchstart=""><p>ド</p></div>
+  <div class="black"></div>
+  <div class="key white" id="re" ontouchstart=""><p>レ</p></div>
+  <div class="black"></div>
+  <div class="key white" id="mi" ontouchstart=""><p>ミ</p></div>
+  <div class="key white" id="fa" ontouchstart=""><p>ファ</p></div>
+  <div class="black"></div>
+  <div class="key white" id="so" ontouchstart=""><p>ソ</p></div>
+  <div class="black"></div>
+  <div class="key white" id="ra" ontouchstart=""><p>ラ</p></div>
+  <div class="black"></div>
+  <div class="key white" id="shi" ontouchstart=""><p>シ</p></div>
+  <div class="key white" id="do_high" ontouchstart=""><p>ド↑</p></div>
+  <div class="black"></div>
+  <div class="key white" id="re_high" ontouchstart=""><p>レ↑</p></div>
+  <div class="black"></div>
+  <div class="key white" id="mi_high" ontouchstart=""><p>ミ↑</p></div>
+</div>
+<script>
+
+//全体で使う変数や設定など
+const  measureLength = 32;//小節の長さ
+const tempo_category = document.getElementById("tempo_category");
+const play_mode = document.getElementById("play_mode");
+const measure_edit = document.getElementById("measureEdit");
+const notes = []; 
+const kachi = new Audio('audio/kachi.mp3');
+let notesCount = 0;
+const eighthNote = document.getElementById("eighthNote");
+const quarterNote = document.getElementById("quarterNote");
+const dottedQuarterNote = document.getElementById("dottedQuarterNote");
+const halfNote = document.getElementById("halfNote");
+const wrongSound = new Audio('audio/wrong.mp3');
+
+//ロード
+function load(){
+  for(i = 0; i < measureLength; i++){
+    notes[i] = "";
+  }
+  changeTempo();
+  measure_edit.style.visibility = "hidden";
+  ABCJS.renderAbc("paper","M:4/4\nL:1/8\nK:C\n " + notes[0] + notes[1] + notes[2] + notes[3] + notes[4] + notes[5] + notes[6]+ notes[7] + "|" + notes[8] + notes[9] + notes[10] + notes[11] + notes[12] + notes[13] + notes[14]+ notes[15] + "|" + notes[16] + notes[17] + notes[18] + notes[19] + notes[20] + notes[21] + notes[22]+ notes[23] + "|" + notes[24] + notes[25] + notes[26] + notes[27] + notes[28] + notes[29] + notes[30]+ notes[31] + "|]",{add_classes: true,responsive: "resize",paddingtop:"18",paddingbottom:"8"});
+  displayPiano();
+}
+
+//リズム画像
+function borderReset(){
+  document.getElementById("tata").style.borderColor = "black";
+  document.getElementById("tan").style.borderColor = "black";
+  document.getElementById("ta_n").style.borderColor = "black";
+  document.getElementById("ta__n").style.borderColor = "black";
+}
+document.getElementById("tan").addEventListener("click", function() {
+  kachi.play();
+  borderReset();
+  document.getElementById("tan").style.borderColor = "lightblue";
+}, false);
+document.getElementById("tata").addEventListener("click", function() {
+  kachi.play();
+  borderReset();
+  document.getElementById("tata").style.borderColor = "lightgreen";
+}, false);
+document.getElementById("ta__n").addEventListener("click", function() {
+  kachi.play();
+  borderReset();
+  document.getElementById("ta__n").style.borderColor = "lightpink";
+}, false);
+document.getElementById("ta_n").addEventListener("click", function() {
+  kachi.play();
+  borderReset();
+  document.getElementById("ta_n").style.borderColor = "orange";
+}, false);
+
+//ド→C レ→D ミ→E ファ→F ソ→G ラ→A シ→B ド→c レ→d ミ→e
+let bpm;
+function melodyAndChordRenderMidi(bpm) {
+  ABCJS.renderMidi( "audio","M:4/4\nL:1/8\nK:C\nV:1\n" + notes[0] + notes[1] + notes[2] + notes[3] + notes[4] + notes[5] + notes[6]+ notes[7] + "|" + notes[8] + notes[9] + notes[10] + notes[11] + notes[12] + notes[13] + notes[14]+ notes[15] + "|" + notes[16] + notes[17] + notes[18] + notes[19] + notes[20] + notes[21] + notes[22]+ notes[23] + "|" + notes[24] + notes[25] + notes[26] + notes[27] + notes[28] + notes[29] + notes[30]+ notes[31] +  "||" +
+        "\nV:2\n" + "[C4E4G4c4][C4E4G4c4]" + "|" + "[C4F4A4c4][C4F4A4c4]" + "|" + "[C4E4G4c4][D4F4G4B4d4]" +  "|" + "[C8E8G8c8]" + "||",{generateDownload: true,qpm:bpm,chordsOff:true});
+}
+
+function melodyRenderMidi(bpm) {
+  ABCJS.renderMidi( "audio","M:4/4\nL:1/8\nK:C\n " + notes[0] + notes[1] + notes[2] + notes[3] + notes[4] + notes[5] + notes[6]+ notes[7] + "|" + notes[8] + notes[9] + notes[10] + notes[11] + notes[12] + notes[13] + notes[14]+ notes[15] + "|" + notes[16] + notes[17] + notes[18] + notes[19] + notes[20] + notes[21] + notes[22]+ notes[23] + "|" + notes[24] + notes[25] + notes[26] + notes[27] + notes[28] + notes[29] + notes[30]+ notes[31] + "||",{generateDownload: true,qpm:bpm,chordsOff:true});
+}
+
+function chordRenderMidi(bpm) {
+  ABCJS.renderMidi( "audio","M:4/4\nL:1/8\nK:C\nV:1\n" + "[C4E4G4c4][C4E4G4c4]" + "|" + "[C4F4A4c4][C4F4A4c4]" + "|" + "[C4E4G4c4][D4F4G4B4d4]" +  "|" + "[C8E8G8c8]" + "||",{generateDownload: true,qpm:bpm,chordsOff:true});
+}
+
+//テンポ切り替え
+tempo_category.onchange = changeTempo;
+play_mode.onchange = changeTempo;
+function changeTempo(){
+  switch (tempo_category.value){
+  case "tempo_60":
+    bpm = 60;
+    break;
+  case "tempo_80":
+    bpm = 80;
+    break;
+  case "tempo_100":
+    bpm = 100;
+    break;
+  case "tempo_120":
+    bpm = 120;
+    break;    
+  case "tempo_140":
+    bpm = 140;
+    break;    
+  case "tempo_160":
+    bpm = 160;
+    break;      
+  }  
+  switch (play_mode.value){
+    case "play":
+      melodyAndChordRenderMidi(bpm);
+      break; 
+    case "only_melody":
+      melodyRenderMidi(bpm);
+      break; 
+    case "only_chord":
+      chordRenderMidi(bpm);
+      break;
+  }  
+}
+
+//楽譜表示
+function displayNote(){
+  changeTempo();
+  ABCJS.renderAbc("paper","M:4/4\nL:1/8\nK:C\n " + notes[0] + notes[1] + notes[2] + notes[3] + notes[4] + notes[5] + notes[6]+ notes[7] + "|" + notes[8] + notes[9] + notes[10] + notes[11] + notes[12] + notes[13] + notes[14]+ notes[15] + "|" + notes[16] + notes[17] + notes[18] + notes[19] + notes[20] + notes[21] + notes[22]+ notes[23] + "|" + notes[24] + notes[25] + notes[26] + notes[27] + notes[28] + notes[29] + notes[30]+ notes[31] + "|]",{add_classes: true,responsive: "resize",paddingtop:"0",paddingbottom:"8"});
+}  
+
+//楽譜表示切り替え
+//ド→C レ→D ミ→E ファ→F ソ→G ラ→A シ→B ド→c レ→d ミ→e
+
+//音源
+function playSingleNote(note,beat) {
+  const synth = new Tone.Synth().toDestination();
+  synth.triggerAttackRelease(note, beat);
+}
+
+function soundAndDisplayNote(sound,display) {
+  let measureEditFlg = false;
+  switch (measure_edit.value){
+    case "measure1":
+      if(0 <= notesCount && notesCount < 8){
+        measureEditFlg = true;
+      }
+    break;  
+    case "measure2":
+      if(8 <= notesCount && notesCount < 16){
+        measureEditFlg = true;
+      }
+    break;
+    case "measure3":
+      if(16 <= notesCount && notesCount < 24){
+        measureEditFlg = true;
+      }
+    break;
+    case "measure4":
+      if(24 <= notesCount && notesCount < 32){
+        measureEditFlg = true;  
+      }
+    break;
+    default: 
+      measureEditFlg = true;
+  } 
+
+  if(notesCount >= measureLength - 8){
+    measure_edit.style.visibility = "visible";
+  }
+  if(notesCount >= measureLength){
+    wrongSound.play();
+  }
+  else if(eighthNote.checked){
+    function eighthNotePlayAndDisplayNoSpace(){
+      playSingleNote(sound,"8n");
+      notes[notesCount] = display;
+      notesCount++;
+    }
+    function eighthNotePlayAndDisplaySpace(){
+      playSingleNote(sound,"8n");
+      notes[notesCount] = display + " ";
+      notesCount++;
+    }
+    if(measureEditFlg){
+      if(notesCount%2 == 0){
+        eighthNotePlayAndDisplayNoSpace();
+      }
+      else{
+        eighthNotePlayAndDisplaySpace();
+      }
+    }
+  }
+  else if(quarterNote.checked){
+    function quarterNotePlayAndDisplay(){
+      playSingleNote(sound,"4n");
+      notes[notesCount] = display + "2";
+      notesCount+=2;
+    }
+    if(notesCount%8 == 7){
+      wrongSound.play();
+    }
+    else if(measureEditFlg){
+      quarterNotePlayAndDisplay();
+    }
+  }
+  else if(dottedQuarterNote.checked){
+    function dottedQuarterNotePlayAndDisplay(){
+      playSingleNote(sound,"3n");
+      notes[notesCount] = display + "3";
+      notesCount+=3;
+    }
+    if(notesCount%8 == 6 ||notesCount%8 == 7){
+      wrongSound.play();
+    }
+    else if(measureEditFlg){
+      dottedQuarterNotePlayAndDisplay();
+    }
+  }
+  else if(halfNote.checked){
+    function halfNotePlayAndDisplay(){
+      playSingleNote(sound,"2n");
+      notes[notesCount] = display + "4";
+      notesCount+=4;
+    }
+    if(notesCount%8 == 5 || notesCount%8 == 6 || notesCount%8 == 7){
+      wrongSound.play();
+    }
+    else if(measureEditFlg){
+      halfNotePlayAndDisplay();
+    }
+  }
+}
+
+document.getElementById("eighthRest").addEventListener("click", function() {
+  if(notesCount >= measureLength){
+        wrongSound.play();
+      }
+  else if(notes[notesCount - 1] == " z"){
+    notes[notesCount - 1] = "z2";
+  }
+  else{
+    notes[notesCount] = " z";
+  }
+  notesCount++;
+  displayNote();
+}, false);
+document.getElementById("quarterRest").addEventListener("click", function() {
+  if(notesCount%8 == 7 || notesCount >= measureLength){
+        wrongSound.play();
+      }
+  else{
+    notes[notesCount] = "z2";
+    notesCount+=2;
+  }
+  displayNote();
+}, false);
+
+measure_edit.onchange = measureEdit;
+function measureEdit(){
+  switch (measure_edit.value){
+  case "measure1":
+    notesCount = 0;
+    notes.fill("", 0, 8);
+  break;
+  case "measure2": 
+    notesCount = 8;
+    notes.fill("", 8, 16);
+  break;
+  case "measure3":
+    notesCount = 16;
+    notes.fill("", 16, 24);
+  break;
+  case "measure4": 
+    notesCount = 24;
+    notes.fill("", 24, 32);
+  break;
+  default:
+  notesCount = 32;
+  }
+  displayNote();
+  displayPiano();
+}
+
+const eighthNoteArray = ["C","D","E","F","G","A","B","c","d","e","C ","D ","E ","F ","G ","A ","B ","c ","d ","e "];
+const quarterNoteArray = ["C2","D2","E2","F2","G2","A2","B2","c2","d2","e2"];
+const dottedQuarterNoteArray = ["C3","D3","E3","F3","G3","A3","B3","c3","d3","e3"];
+const halfNoteArray = ["C4","D4","E4","F4","G4","A4","B4","c4","d4","e4"];
+document.getElementById("oneBack").addEventListener("click", function() {
+  if(notesCount == 0){
+    wrongSound.play();
+  }
+  else if(measure_edit.value == "measure2" && notesCount == 8 || measure_edit.value == "measure3" && notesCount == 16 || measure_edit.value == "measure4" && notesCount == 24){
+    ;
+  }
+  else if(eighthNoteArray.includes(notes[notesCount-1])){
+    notes[notesCount-1] = "";
+    notesCount--;
+  }
+  else if(quarterNoteArray.includes(notes[notesCount-2])){
+    notes[notesCount-2] = "";
+    notesCount-=2;
+  }
+  else if(dottedQuarterNoteArray.includes(notes[notesCount-3])){
+    notes[notesCount-3] = "";
+    notesCount-=3;
+  }
+  else if(halfNoteArray.includes(notes[notesCount-4])){
+    notes[notesCount-4] = "";
+    notesCount-=4;
+  }
+  else if(notes[notesCount-1] == " z"){
+    notes[notesCount-1] = "";
+    notesCount--;
+  }
+  else if(notes[notesCount-2] == "z2"){
+    notes[notesCount-2] = "";
+    notesCount-=2;
+  }
+  displayNote();
+  displayPiano();
+}, false);
+
+function displayPiano(){
+  document.getElementById("do").style.backgroundColor = "gray";
+  document.getElementById("re").style.backgroundColor = "gray";
+  document.getElementById("mi").style.backgroundColor = "gray";
+  document.getElementById("fa").style.backgroundColor = "gray";
+  document.getElementById("so").style.backgroundColor = "gray";
+  document.getElementById("ra").style.backgroundColor = "gray";
+  document.getElementById("shi").style.backgroundColor = "gray";
+  document.getElementById("do_high").style.backgroundColor = "gray";
+  document.getElementById("re_high").style.backgroundColor = "gray";
+  document.getElementById("mi_high").style.backgroundColor = "gray";
+
+  if(notesCount < 8){
+    document.getElementById("do").style.backgroundColor = "white";
+    document.getElementById("mi").style.backgroundColor = "white";
+    document.getElementById("so").style.backgroundColor = "white";
+    document.getElementById("do_high").style.backgroundColor = "white";
+  }
+  else if(notesCount < 16){
+    document.getElementById("do").style.backgroundColor = "white";
+    document.getElementById("fa").style.backgroundColor = "white";
+    document.getElementById("ra").style.backgroundColor = "white";
+    document.getElementById("do_high").style.backgroundColor = "white";
+  }
+  else if(notesCount < 20){
+    document.getElementById("do").style.backgroundColor = "white";
+    document.getElementById("mi").style.backgroundColor = "white";
+    document.getElementById("so").style.backgroundColor = "white";
+    document.getElementById("do_high").style.backgroundColor = "white";
+  }
+  else if(notesCount < 24){
+    document.getElementById("re").style.backgroundColor = "white";
+    document.getElementById("fa").style.backgroundColor = "white";
+    document.getElementById("so").style.backgroundColor = "white";
+    document.getElementById("shi").style.backgroundColor = "white";
+    document.getElementById("re_high").style.backgroundColor = "white";
+  }
+  else if(notesCount < 32){
+    document.getElementById("do").style.backgroundColor = "white";
+    document.getElementById("mi").style.backgroundColor = "white";
+    document.getElementById("so").style.backgroundColor = "white";
+    document.getElementById("do_high").style.backgroundColor = "white";
+  }
+}
+document.getElementById("piano").addEventListener("click", function() {
+  displayNote();
+  displayPiano();
+}, false);
+
+
+//鍵盤音階再生
+document.getElementById("do").addEventListener("click", function() {
+  if(notesCount < 20 || notesCount >= 24){
+    soundAndDisplayNote("C4","C");
+  }
+}, false);
+  document.getElementById("re").addEventListener("click", function() {
+    if(notesCount >= 20 && notesCount <= 23){
+      soundAndDisplayNote("D4","D");
+    }
+}, false);
+  document.getElementById("mi").addEventListener("click", function() {
+    if(notesCount < 8 || notesCount >= 16 && notesCount < 20 || notesCount >= 24){
+    soundAndDisplayNote("E4","E");
+    }
+}, false);
+  document.getElementById("fa").addEventListener("click", function() {
+    if(notesCount >= 8 && notesCount < 16 || notesCount >= 20 && notesCount < 24){
+    soundAndDisplayNote("F4","F");
+    }
+}, false);
+  document.getElementById("so").addEventListener("click", function() {
+    if(notesCount < 8 || notesCount >= 16){
+    soundAndDisplayNote("G4","G");
+    }
+}, false);
+  document.getElementById("ra").addEventListener("click", function() {
+    if(notesCount >= 8 && notesCount < 16){
+    soundAndDisplayNote("A4","A");
+    }
+}, false);
+  document.getElementById("shi").addEventListener("click", function() {
+    if(notesCount >= 20 && notesCount < 24){
+    soundAndDisplayNote("B4","B");
+    }
+}, false);
+  document.getElementById("do_high").addEventListener("click", function() {
+    if(notesCount < 20 || notesCount >= 24){
+    soundAndDisplayNote("C5","c");
+    }
+}, false);
+  document.getElementById("re_high").addEventListener("click", function() {
+    if(notesCount >= 20 && notesCount < 24){
+    soundAndDisplayNote("D5","d");
+    }
+}, false);
+  document.getElementById("mi_high").addEventListener("click", function() {
+    //soundAndDisplayNote("E5","e");
+}, false);
+</script>
+</body>
+</html>
