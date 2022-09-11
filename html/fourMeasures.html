@@ -316,21 +316,23 @@ function soundAndDisplayNote(sound,display) {
 document.getElementById("eighthRest").addEventListener("click", function() {
   if(notesCount >= measureLength){
         wrongSound.play();
-      }
-  else if(notes[notesCount - 1] == " z"){
-    notes[notesCount - 1] = "z2";
   }
-  else{
-    notes[notesCount] = " z";
+  else if(measureEditFlg){
+    if(notes[notesCount - 1] == " z"){
+      notes[notesCount - 1] = "z2";
+    }
+    else{
+      notes[notesCount] = " z";
+    }
+    notesCount++;
   }
-  notesCount++;
   displayNote();
 }, false);
 document.getElementById("quarterRest").addEventListener("click", function() {
   if(notesCount%8 == 7 || notesCount >= measureLength){
-        wrongSound.play();
-      }
-  else{
+    wrongSound.play();
+  }
+  else if(measureEditFlg){
     notes[notesCount] = "z2";
     notesCount+=2;
   }
