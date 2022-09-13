@@ -218,8 +218,8 @@ function playSingleNote(note,beat) {
   synth.triggerAttackRelease(note, beat);
 }
 
+let measureEditFlg = false;
 function soundAndDisplayNote(sound,display) {
-  let measureEditFlg = false;
   switch (measure_edit.value){
     case "measure1":
       if(0 <= notesCount && notesCount < 8){
