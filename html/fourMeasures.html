@@ -7,15 +7,15 @@
 
     <script>
           document.write(
-            '<link rel="stylesheet" href="../css/style.css?' + new Date().getTime() + '">'
+            '<link rel="stylesheet" href="css/style.css?' + new Date().getTime() + '">'
           );
     </script>
     <script src="https://unpkg.com/tone@14.7.77/build/Tone.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-    <script src="../js/abcjs-basic.js"></script>
-    <script src="../js/abcjs_midi_5.12.0-min.js"></script>
+    <script src="js/abcjs-basic.js"></script>
+    <script src="js/abcjs_midi_5.12.0-min.js"></script>
 
-    <link rel="stylesheet" type="text/css" href="../css/abcjs-audio.css">
+    <link rel="stylesheet" type="text/css" href="css/abcjs-audio.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css" integrity="sha512-1sCRPdkRXhBV2PBLUdRb4tMg1w2YPf37qatUFeS7zlBy7jJI8Lf4VHwWfZZfpXtYSLy85pkm9GaYVYMfw5BC1A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 
@@ -45,27 +45,32 @@
 <div class="beat">
   <label for="eighthNote">
     <input id="eighthNote" type="radio" name="beat" value="eighthNote">
-    <img src="../img/hatibuonpu.jpeg" alt="" class="rhythmImg" id="tata" ontouchstart="">
+    <img src="img/hatibuonpu.jpeg" alt="" class="rhythmImg" id="tata" ontouchstart="">
   </label>
 
   <label for="quarterNote">
     <input id="quarterNote" type="radio" name="beat" value="quarterNote" checked>
-    <img src="../img/shibuonnpu.jpeg" alt="" class="rhythmImg" id="tan" ontouchstart="">
+    <img src="img/shibuonnpu.jpeg" alt="" class="rhythmImg" id="tan" ontouchstart="">
   </label>
 
   <label for="dottedQuarterNote">
     <input id="dottedQuarterNote" type="radio" name="beat" value="dottedQuarterNote">
-    <img src="../img/huten-yonbuonpu.jpeg" alt="" class="rhythmImg" id="ta_n" ontouchstart="">
+    <img src="img/huten-yonbuonpu.jpeg" alt="" class="rhythmImg" id="ta_n" ontouchstart="">
   </label>
 
   <label for="halfNote">
     <input id="halfNote" type="radio" name="beat" value="halfNote">
-    <img src="../img/nibunonpu.jpeg" alt="" class="rhythmImg" id="ta__n" ontouchstart="">
+    <img src="img/nibunonpu.jpeg" alt="" class="rhythmImg" id="ta__n" ontouchstart="">
   </label>
 
-  <img src="../img/hachibukyufu.jpeg" alt="" class="rhythmImg" id="eighthRest" ontouchstart="">
+  <label for="wholeNote">
+    <input id="wholeNote" type="radio" name="beat" value="wholeNote">
+    <img src="img/zenonpu.jpg" alt="" class="rhythmImg" id="ta____n" ontouchstart="">
+  </label>
 
-  <img src="../img/shibukyufu.jpeg" alt="" class="rhythmImg" id="quarterRest" ontouchstart="">
+  <img src="img/hachibukyufu.jpeg" alt="" class="rhythmImg" id="eighthRest" ontouchstart="">
+
+  <img src="img/shibukyufu.jpeg" alt="" class="rhythmImg" id="quarterRest" ontouchstart="">
 
   <button id="oneBack" ontouchstart=""><i class="fa-solid fa-rotate-left"></i></button>
 
@@ -105,13 +110,14 @@ const tempo_category = document.getElementById("tempo_category");
 const play_mode = document.getElementById("play_mode");
 const measure_edit = document.getElementById("measureEdit");
 const notes = []; 
-const kachi = new Audio('../audio/kachi.mp3');
+const kachi = new Audio('audio/kachi.mp3');
 let notesCount = 0;
 const eighthNote = document.getElementById("eighthNote");
 const quarterNote = document.getElementById("quarterNote");
 const dottedQuarterNote = document.getElementById("dottedQuarterNote");
 const halfNote = document.getElementById("halfNote");
-const wrongSound = new Audio('../audio/wrong.mp3');
+const wholeNote = document.getElementById("wholeNote");
+const wrongSound = new Audio('audio/wrong.mp3');
 
 //ロード
 function load(){
@@ -130,6 +136,7 @@ function borderReset(){
   document.getElementById("tan").style.borderColor = "black";
   document.getElementById("ta_n").style.borderColor = "black";
   document.getElementById("ta__n").style.borderColor = "black";
+  document.getElementById("ta____n").style.borderColor = "black";
 }
 document.getElementById("tan").addEventListener("click", function() {
   kachi.play();
@@ -141,15 +148,20 @@ document.getElementById("tata").addEventListener("click", function() {
   borderReset();
   document.getElementById("tata").style.borderColor = "lightgreen";
 }, false);
+document.getElementById("ta_n").addEventListener("click", function() {
+  kachi.play();
+  borderReset();
+  document.getElementById("ta_n").style.borderColor = "orange";
+}, false);
 document.getElementById("ta__n").addEventListener("click", function() {
   kachi.play();
   borderReset();
   document.getElementById("ta__n").style.borderColor = "lightpink";
 }, false);
-document.getElementById("ta_n").addEventListener("click", function() {
+document.getElementById("ta____n").addEventListener("click", function() {
   kachi.play();
   borderReset();
-  document.getElementById("ta_n").style.borderColor = "orange";
+  document.getElementById("ta____n").style.borderColor = "yellow";
 }, false);
 
 //ド→C レ→D ミ→E ファ→F ソ→G ラ→A シ→B ド→c レ→d ミ→e
@@ -219,8 +231,8 @@ function playSingleNote(note,beat) {
   synth.triggerAttackRelease(note, beat);
 }
 
-let measureEditFlg = false;
 function soundAndDisplayNote(sound,display) {
+  let measureEditFlg = false;
   switch (measure_edit.value){
     case "measure1":
       if(0 <= notesCount && notesCount < 8){
@@ -311,28 +323,39 @@ function soundAndDisplayNote(sound,display) {
       halfNotePlayAndDisplay();
     }
   }
+  else if(wholeNote.checked){
+    function wholeNotePlayAndDisplay(){
+      playSingleNote(sound,"1n");
+      notes[notesCount] = display + "8";
+      notesCount+=8;
+    }
+    if(notesCount%8 != 0){
+      wrongSound.play();
+    }
+    else if(measureEditFlg){
+      wholeNotePlayAndDisplay();
+    }
+  }
 }
 
 document.getElementById("eighthRest").addEventListener("click", function() {
   if(notesCount >= measureLength){
         wrongSound.play();
+      }
+  else if(notes[notesCount - 1] == " z"){
+    notes[notesCount - 1] = "z2";
   }
-  else if(measureEditFlg){
-    if(notes[notesCount - 1] == " z"){
-      notes[notesCount - 1] = "z2";
-    }
-    else{
-      notes[notesCount] = " z";
-    }
-    notesCount++;
+  else{
+    notes[notesCount] = " z";
   }
+  notesCount++;
   displayNote();
 }, false);
 document.getElementById("quarterRest").addEventListener("click", function() {
   if(notesCount%8 == 7 || notesCount >= measureLength){
-    wrongSound.play();
-  }
-  else if(measureEditFlg){
+        wrongSound.play();
+      }
+  else{
     notes[notesCount] = "z2";
     notesCount+=2;
   }
@@ -369,6 +392,7 @@ const eighthNoteArray = ["C","D","E","F","G","A","B","c","d","e","C ","D ","E ",
 const quarterNoteArray = ["C2","D2","E2","F2","G2","A2","B2","c2","d2","e2"];
 const dottedQuarterNoteArray = ["C3","D3","E3","F3","G3","A3","B3","c3","d3","e3"];
 const halfNoteArray = ["C4","D4","E4","F4","G4","A4","B4","c4","d4","e4"];
+const wholeNoteArray = ["C8","D8","E8","F8","G8","A8","B8","c8","d8","e8"];
 document.getElementById("oneBack").addEventListener("click", function() {
   if(notesCount == 0){
     wrongSound.play();
@@ -391,6 +415,10 @@ document.getElementById("oneBack").addEventListener("click", function() {
   else if(halfNoteArray.includes(notes[notesCount-4])){
     notes[notesCount-4] = "";
     notesCount-=4;
+  }
+  else if(wholeNoteArray.includes(notes[notesCount-8])){
+    notes[notesCount-8] = "";
+    notesCount-=8;
   }
   else if(notes[notesCount-1] == " z"){
     notes[notesCount-1] = "";
