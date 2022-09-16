@@ -8,9 +8,18 @@ body {
   list-style: none;
 }
 
+h1{
+  font-size: 80px;
+}
+
 p {
   font-weight: bold;
   font-size: 1.2vw;
+}
+
+a{
+  text-decoration: none;
+  color: black;
 }
 
 select {
@@ -19,6 +28,16 @@ select {
   height: 48px;
   margin: 0 8px 0 0;
   box-shadow: 2px 2px 4px gray;
+}
+
+.homebtns{
+  display: block;
+}
+.modeBtn{
+  width: 24vw;
+  height: 8vw;
+  margin: 64px 0;
+  font-size: 32px;
 }
 
 .rhythmImg {
