@@ -6,6 +6,7 @@ body {
   padding: 0;
   text-align: center;
   list-style: none;
+  background-color: #f4f0ea;
 }
 
 h1{
@@ -38,6 +39,14 @@ select {
   height: 8vw;
   margin: 64px 0;
   font-size: 32px;
+  border-radius: 16px;
+}
+
+.btnFourMeasures{
+  background-color: aqua;
+}
+.btnEightMeasures{
+  background-color: aquamarine;
 }
 
 .rhythmImg {
