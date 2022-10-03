@@ -35,18 +35,27 @@ select {
   display: block;
 }
 .modeBtn{
-  width: 24vw;
+  width: 32vw;
   height: 8vw;
-  margin: 64px 0;
+  margin: 48px 0;
   font-size: 32px;
   border-radius: 16px;
+  box-shadow: 2px 2px 4px gray;
 }
 
-.btnFourMeasures{
-  background-color: aqua;
+.modeBtn:active{
+  box-shadow: none;
+  transform: translate3d(0, 4px, 0);
+}
+
+.btnElementaryFourMeasures{
+  border: 4px solid lightblue;
+}
+.btnJuniorHighFourMeasures{
+  border: 4px solid lightpink;
 }
 .btnEightMeasures{
-  background-color: aquamarine;
+  border: 4px solid lightgreen;
 }
 
 .rhythmImg {

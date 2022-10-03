@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <title>メロディア 4小節ver.</title>
+    <title>メロディア 4小節（中学生）</title>
 
     <script src="../js/abcjs-basic.js"></script>
     <script src="../js/abcjs_midi_5.12.0-min.js"></script>
@@ -169,7 +169,7 @@ document.getElementById("ta____n").addEventListener("click", function() {
 let bpm;
 function melodyAndChordRenderMidi(bpm) {
   ABCJS.renderMidi( "audio","M:4/4\nL:1/8\nK:C\nV:1\n" + notes[0] + notes[1] + notes[2] + notes[3] + notes[4] + notes[5] + notes[6]+ notes[7] + "|" + notes[8] + notes[9] + notes[10] + notes[11] + notes[12] + notes[13] + notes[14]+ notes[15] + "|" + notes[16] + notes[17] + notes[18] + notes[19] + notes[20] + notes[21] + notes[22]+ notes[23] + "|" + notes[24] + notes[25] + notes[26] + notes[27] + notes[28] + notes[29] + notes[30]+ notes[31] +  "||" +
-        "\nV:2\n" + "[C4E4G4c4][C4E4G4c4]" + "|" + "[C4F4A4c4][C4F4A4c4]" + "|" + "[C4E4G4c4][D4F4G4B4d4]" +  "|" + "[C8E8G8c8]" + "||",{generateDownload: true,qpm:bpm,chordsOff:true});
+        "\nV:2\n" + "[C4E4G4c4][C4E4G4c4]" + "|" + "[C4F4A4c4][C4F4A4c4]" + "|" + "[C4E4G4c4][C4E4G4c4]" +  "|" + "[C8E8G8c8]" + "||",{generateDownload: true,qpm:bpm,chordsOff:true});
 }
 
 function melodyRenderMidi(bpm) {
@@ -177,7 +177,7 @@ function melodyRenderMidi(bpm) {
 }
 
 function chordRenderMidi(bpm) {
-  ABCJS.renderMidi( "audio","M:4/4\nL:1/8\nK:C\nV:1\n" + "[C4E4G4c4][C4E4G4c4]" + "|" + "[C4F4A4c4][C4F4A4c4]" + "|" + "[C4E4G4c4][D4F4G4B4d4]" +  "|" + "[C8E8G8c8]" + "||",{generateDownload: true,qpm:bpm,chordsOff:true});
+  ABCJS.renderMidi( "audio","M:4/4\nL:1/8\nK:C\nV:1\n" + "[C4E4G4c4][C4E4G4c4]" + "|" + "[C4F4A4c4][C4F4A4c4]" + "|" + "[C4E4G4c4][C4E4G4c4]" +  "|" + "[C8E8G8c8]" + "||",{generateDownload: true,qpm:bpm,chordsOff:true});
 }
 
 //テンポ切り替え
