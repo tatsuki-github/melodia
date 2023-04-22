@@ -123,14 +123,34 @@ const halfNote = document.getElementById("halfNote");
 const wholeNote = document.getElementById("wholeNote");
 const wrongSound = new Audio('../audio/wrong.mp3');
 
-//ロード
-function load(){
-  for(i = 0; i < measureLength; i++){
+function clearNotes() {
+  for (let i = 0; i < measureLength; i++) {
     notes[i] = "";
   }
-  changeTempo();
+}
+
+function hideMeasureEdit() {
   measure_edit.style.visibility = "hidden";
-  ABCJS.renderAbc("paper","M:4/4\nL:1/8\nK:C\n " + notes[0] + notes[1] + notes[2] + notes[3] + notes[4] + notes[5] + notes[6]+ notes[7] + "|" + notes[8] + notes[9] + notes[10] + notes[11] + notes[12] + notes[13] + notes[14]+ notes[15] + "|" + notes[16] + notes[17] + notes[18] + notes[19] + notes[20] + notes[21] + notes[22]+ notes[23] + "|" + notes[24] + notes[25] + notes[26] + notes[27] + notes[28] + notes[29] + notes[30]+ notes[31] + "|]",{add_classes: true,responsive: "resize",paddingtop:"18",paddingbottom:"8"});
+}
+
+function renderAbc() {
+  const abcNotes = Array.from({ length: 4 }, (_, i) =>
+    notes.slice(i * 8, (i + 1) * 8).join("")
+  ).join("|");
+
+  ABCJS.renderAbc("paper", `M:4/4\nL:1/8\nK:C\n ${abcNotes}|]`, {
+    add_classes: true,
+    responsive: "resize",
+    paddingtop: "18",
+    paddingbottom: "8",
+  });
+}
+
+function load() {
+  clearNotes();
+  changeTempo();
+  hideMeasureEdit();
+  renderAbc();
   displayPiano();
 }
 
