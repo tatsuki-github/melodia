@@ -10,7 +10,7 @@ body {
 }
 
 h1{
-  font-size: 80px;
+  font-size: 3rem;
 }
 
 p {
@@ -26,9 +26,16 @@ a{
 select {
   color: #000;
   font-weight: bold;
-  height: 48px;
+  width: 14vw;
+  height: 5vw;
   margin: 0 8px 0 0;
   box-shadow: 2px 2px 4px gray;
+}
+
+@media screen and (max-width: 420px) {
+  select {
+    font-size: 0.4rem;
+  }
 }
 
 .homebtns{
@@ -37,10 +44,16 @@ select {
 .modeBtn{
   width: 36vw;
   height: 8vw;
-  margin: 40px 0;
+  margin: 5vw 0;
   font-size: 1.6rem;
   border-radius: 16px;
   box-shadow: 2px 2px 4px gray;
+}
+
+@media screen and (max-width: 420px) {
+  .modeBtn{
+    font-size: 0.8rem;
+  }
 }
 
 .modeBtn:active{
@@ -59,8 +72,7 @@ select {
 }
 
 .rhythmImg {
-  width: 88px;
-  height: 64px;
+  width: 6vw;
   margin: 0 1vw 0 0;
   box-shadow: 2px 2px 4px gray;
 }
@@ -71,7 +83,8 @@ select {
 }
 
 #tata,#eighthRest,#tan,#quarterRest,#ta_n,#ta__n,#ta____n,#oneBack{
-  border: 4px solid black;
+  width: 6vw;
+  border: 0.3rem solid black;
 }
 
 #eighthRest,#quarterRest,#oneBack{
@@ -79,8 +92,16 @@ select {
 }
 
 #oneBack{
-  font-size: 32px;
+  width: 7vw;
+  height: 7vw;
+  font-size: 1.4em;
   box-shadow: 2px 2px 4px gray;
+}
+
+@media screen and (max-width: 420px) {
+  #oneBack{
+    font-size: 0.5em;
+  }
 }
 
 #oneBack:active{
@@ -98,7 +119,7 @@ select {
 
 .playSettings {
   margin: 24px auto;
-  width: 48%;
+  width: 100%;
 }
 
 #tempo_category {
@@ -106,13 +127,12 @@ select {
 }
 
 .buttons {
+  width: 100%;
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
 }
 
 button {
-  width: 8vw;
-  height: 4vw;
   border-radius: 8px;
   border: none;
   color: black;
@@ -183,7 +203,7 @@ button {
 
 
 .abcjs-inline-midi {
-  height: 48px;
+  height: 5vw;
   padding: 0 5px;
   border-radius: 3px;
   color: #f4f4f4;
@@ -338,11 +358,17 @@ button {
   color: transparent;
 }
 .abcjs-download-midi a:before {
-  font-size: 40px;
+  font-size: 2.8rem;
   white-space: pre-wrap;
   content: "  ";
   background-image: url(../img/file-arrow-down-solid.svg);
   background-repeat: no-repeat;
+}
+
+@media screen and (max-width: 420px) {
+  .abcjs-download-midi a:before {
+    font-size: 1.4rem;
+  }
 }
 
 #measureEdit{
