@@ -154,11 +154,17 @@ function load() {
     console.log(storedNotes);
     notes = storedNotes;
     notesCount = storedNotesCount;
+    if(storedNotesCount > measureLength - 8){
+      measure_edit.style.visibility = "visible";
+    }
+    else{
+      hideMeasureEdit();
+    }
   } else {
     clearNotes();
+    hideMeasureEdit();
   }
   changeTempo();
-  hideMeasureEdit();
   renderAbc();
   displayPiano();
 }
@@ -294,7 +300,7 @@ function soundAndDisplayNote(sound,display) {
       measureEditFlg = true;
   } 
 
-  if(notesCount >= measureLength - 8){
+  if(notesCount > measureLength - 8){
     measure_edit.style.visibility = "visible";
   }
   if(notesCount >= measureLength){
