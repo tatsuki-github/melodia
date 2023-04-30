@@ -113,7 +113,7 @@ const  measureLength = 32;//小節の長さ
 const tempo_category = document.getElementById("tempo_category");
 const play_mode = document.getElementById("play_mode");
 const measure_edit = document.getElementById("measureEdit");
-const notes = []; 
+let notes = []; 
 const kachi = new Audio('../audio/kachi.mp3');
 let notesCount = 0;
 const eighthNote = document.getElementById("eighthNote");
@@ -146,13 +146,28 @@ function renderAbc() {
   });
 }
 
+var storedNotes = JSON.parse(sessionStorage.getItem("notes1"));
+var storedNotesCount = JSON.parse(sessionStorage.getItem("notesCount1"));
+
 function load() {
-  clearNotes();
+  if (storedNotes !== null && storedNotesCount !== null) {
+    console.log(storedNotes);
+    notes = storedNotes;
+    notesCount = storedNotesCount;
+  } else {
+    clearNotes();
+  }
   changeTempo();
   hideMeasureEdit();
   renderAbc();
   displayPiano();
 }
+
+window.addEventListener("beforeunload", function() {
+  // 配列をSessionStorageに保存
+  sessionStorage.setItem("notes1", JSON.stringify(notes));
+  sessionStorage.setItem("notesCount1", JSON.stringify(notesCount));
+});
 
 //リズム画像
 function borderReset(){
