@@ -38,7 +38,7 @@ select {
   width: 36vw;
   height: 8vw;
   margin: 40px 0;
-  font-size: 32px;
+  font-size: 1.6rem;
   border-radius: 16px;
   box-shadow: 2px 2px 4px gray;
 }
