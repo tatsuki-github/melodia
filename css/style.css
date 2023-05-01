@@ -94,13 +94,13 @@ select {
 #oneBack{
   width: 7vw;
   height: 7vw;
-  font-size: 1.4em;
+  font-size: 26px;
   box-shadow: 2px 2px 4px gray;
 }
 
 @media screen and (max-width: 420px) {
   #oneBack{
-    font-size: 0.5em;
+    font-size:10px;
   }
 }
 
@@ -203,6 +203,7 @@ button {
 
 
 .abcjs-inline-midi {
+  width: 16vmax;
   height: 5vw;
   padding: 0 5px;
   border-radius: 3px;
@@ -358,7 +359,7 @@ button {
   color: transparent;
 }
 .abcjs-download-midi a:before {
-  font-size: 2.8rem;
+  font-size: 2.5rem;
   white-space: pre-wrap;
   content: "  ";
   background-image: url(../img/file-arrow-down-solid.svg);
